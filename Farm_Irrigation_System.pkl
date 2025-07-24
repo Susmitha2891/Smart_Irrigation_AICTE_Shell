@@ -1,0 +1,13 @@
+import pickle
+
+# Full path to your pickle file
+file_path = "2025/July_2025/Smart_Irrigation/Farm_Irrigation_System.pkl"
+
+# Load the pickle file
+with open(file_path, "rb") as file:
+    irrigation_data = pickle.load(file)
+
+# You can now use `irrigation_data` (it could be a model, dictionary, etc.)
+print("Data loaded successfully!")
+print(type(irrigation_data))
+
