@@ -1,13 +1,46 @@
-import pickle
+import streamlit as st
+import numpy as np
+import joblib
 
-# Full path to your pickle file
-file_path = "2025/July_2025/Smart_Irrigation/Farm_Irrigation_System.pkl"
+# Load the trained ML model
+model = joblib.load("Farm_Irrigation_System.pkl")
 
-# Load the pickle file
-with open(file_path, "rb") as file:
-    irrigation_data = pickle.load(file)
+# App title
+st.title("💧 Smart Irrigation System")
+st.subheader("🌾 Predict Sprinkler Status from Scaled Sensor Data")
 
-# You can now use `irrigation_data` (it could be a model, dictionary, etc.)
-print("Data loaded successfully!")
-print(type(irrigation_data))
+# Instructions
+st.markdown("""
+Enter 20 **scaled sensor values** (between 0 and 1).  
+These could be values from sensors like:
+- Soil Moisture
+- Temperature
+- Humidity
+- pH
+- Light Intensity, etc.
+
+**Prediction Output:**  
+- 🔴 0 = Sprinkler OFF  
+- 🟢 1 = Sprinkler ON
+""")
+
+# Input fields for 20 sensor values
+sensor_values = []
+cols = st.columns(5)
+for i in range(20):
+    with cols[i % 5]:
+        val = st.number_input(f"Sensor {i+1}", min_value=0.0, max_value=1.0, step=0.01, key=f"sensor_{i}")
+        sensor_values.append(val)
+
+# Predict button
+if st.button("🚀 Predict Sprinkler Status"):
+    input_array = np.array(sensor_values).reshape(1, -1)
+    prediction = model.predict(input_array)[0]
+
+    # Output result
+    if prediction == 1:
+        st.success("🟢 Sprinkler should be ON.")
+    else:
+        st.warning("🔴 Sprinkler should be OFF.")
+
 
